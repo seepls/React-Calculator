@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import logo from './logo.svg';
-import './App.css';
+import './App.css'; 
+import App2 from './orientation.js';
+
 
 class App extends Component {
-    
+
     constructor(props){
         super(props);
         this.inputDot=this.inputDot.bind(this);
         this.clearDisplay=this.clearDisplay.bind(this);
-        this.showPercent=this.showPercent.bind(this);
+        this.Percent=this.Percent.bind(this);
         this.changeSign=this.changeSign.bind(this);
-    }
+        this.showLast = this .showLast.bind(this);
 
+        
+    }
     state = {
 		displayValue: '0',
 		waitingForOperator: false ,
@@ -19,18 +24,40 @@ class App extends Component {
 		value: null
 	}
 
-
 clearDisplay(){
 	this.setState({
 		displayValue:'0'
 	})
-}
-inputDigit(digit)
-{
-	const { displayValue ,waitingForOperator}=this.state
+ }
 
+ showLast(digit)
+ {
+	const { displayValue ,waitingForOperator}=this.state
+         var previous ;
+         if(waitingForOperator)
+	{   
+		this.setState({
+			previous : displayValue ,
+			waitingForOperator: false
+		})
+	}else
+		{
+		this.setState({
+			previous : displayValue ,
+			
+		})
+	}
+   this.setState({
+   	  displayValue : previous ,
+   	})
+		
+ }
+	inputDigit(digit)
+ {
+	const { displayValue ,waitingForOperator}=this.state
+    
 	if(waitingForOperator)
-	{
+	{   
 		this.setState({
 			displayValue : String(digit),
 			waitingForOperator: false
@@ -38,12 +65,20 @@ inputDigit(digit)
 	}else
 		{
 		this.setState({
-			displayValue : displayValue === '0' ? String(digit) : displayValue+digit
+			
+			displayValue : displayValue == '0' ? String(digit) : displayValue+digit
 		})
 	}
-}
+ }
+ changeSign(){
+	const {displayValue}=this.state
+	this.setState({
+		displayValue : displayValue.substr(0,1)== '-' ? displayValue.substr(1) : '-'+displayValue
+	})
+ }
 
-inputDot(){
+
+    inputDot(){
 	const { displayValue , waitingForOperator}=this.state
 	if(waitingForOperator)
 	{
@@ -53,30 +88,24 @@ inputDot(){
 		})
 	}
 
-	else if (displayValue.indexOf('.')=== -1)
+	else if (displayValue.indexOf('.')== -1)
 	{
 		this.setState({
 			displayValue : displayValue + '.'
 		})	
 	}
-	
-}
-changeSign(){
-	const {displayValue}=this.state
-	this.setState({
-		displayValue : displayValue.charAt(0)=== '-' ? displayValue.substr(1) : '-'+displayValue
-	})
-}
-showPercent()
-{
+  	
+ }  
+Percent()
+ {
 	const{displayValue}=this.state
 	const value = parseFloat(displayValue)
 	this.setState({
 		displayValue : value/100
 	})
-}
-performOperation(nextoperator)
-{
+ }
+ performOperation(nextoperator)
+ {
 	const { displayValue ,operator,value}= this.state
 	const nextValue = parseFloat(displayValue)
 	const operations = {
@@ -85,10 +114,9 @@ performOperation(nextoperator)
 		'*':(prevValue,nextValue) => prevValue*nextValue,
 		'/':(prevValue,nextValue) => prevValue/nextValue,
 		'=':(prevValue,nextValue) => nextValue,
-
+    	
+    	
 	}
-	
-	//const operatedValue = operations[operator](prevValue,nextValue)
 	if(value==null)
 	{
 		this.setState({
@@ -111,28 +139,37 @@ performOperation(nextoperator)
 		operator:nextoperator,
 
 	})
-}
-
-    
-  render() {
+ }
+ render() {
       
-      const{displayValue}=this.state // never used just assigned 
+      const{displayValue}=this.state
       
       var butn={
         backgroundColor:"#707070",
         color : "#000"
-    };
-    var butn1 = {
+     };
+     var butn1 = {
         backgroundColor:"#707070",
-    };
-    var butn2 = {
-        backgroundColor : "#FFA500" // never used
-    };
-    return (
+     };
+     var butn2 = {
+         backgroundColor : "#FFA500"
+     };
+     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to My Calculator</h1>
+          <table cellspacing="200" cellpadding="100">
+          	<tr><td>
+          			<button style={butn} onClick = {
+          								ReactDOM.render(
+  											<App2/>,
+   										document.getElementById('root'))
+									}>
+
+   					expand▼</button>
+   		 	</td></tr>
+          </table>
         </header>
         <center>
 		<div className="layout">
@@ -142,16 +179,18 @@ performOperation(nextoperator)
 			<div className="numpad">
 				<table cellspacing="10" cellpadding="5">
 				<tr>
-					<td><button style={butn} onClick ={this.clearDisplay}>AC</button></td>
-					<td><button style={butn} onClick = {this.showPercent}>%</button></td>
+					
+					<td><button style={butn} onClick = {this.Percent}>%</button></td>
 					<td><button style={butn} onClick={this.changeSign}>+/-</button></td>
 					<td><button style= {butn} onClick={()=>this.performOperation('/')}>/</button></td>
+					<td><button style={butn2} onClick ={this.clearDisplay}>AC</button></td>
 				</tr>
+				
 				<tr>
 					<td><button style={butn1} onClick={()=>this.inputDigit(7)}>7</button></td>
 					<td><button style={butn1} onClick={()=>this.inputDigit(8)}>8</button></td>
 					<td><button style={butn1} onClick={()=>this.inputDigit(9)}>9</button></td>
-					<td><button style={{backgroundColor : "#FFA500"}} onClick={()=>this.performOperation('*')}>x</button></td>
+					<td><button style={{backgroundColor : "#FFA500"}} onClick={()=>this.performOperation('*')}>*</button></td>
 				</tr>
 				<tr>
 					<td><button style={butn1} onClick={()=> this.inputDigit(4)}>4</button></td>
@@ -169,15 +208,28 @@ performOperation(nextoperator)
 					<td><button style={{backgroundColor: "grey" ,width : "50"}} onClick={() => this.inputDigit(0)}>0</button></td>
 					<td><button style={butn1} onClick={this.inputDot}>.</button></td>
 					<td><button onClick={() =>this.performOperation('=')}>=</button></td>
+					<td> <button style = {butn} onClick = {this.showLast}>C</button></td>
+					
 				</tr>
 				</table>
 			</div>
 		</div>
-	</center>
+	 </center>
 
       </div>
-    );
-  }
+     );
+    }
 }
 
 export default App;
+
+ 
+
+
+
+
+
+
+
+
+
