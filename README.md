@@ -1,9 +1,9 @@
 to start : 
-clone the repo first 
-cd to the repo 
-npm install 
-npm run 
-npm start 
+clone the repo first \n
+cd to the repo \n
+npm install \n
+npm run \n
+npm start \n
 
 .. launched ..
 
